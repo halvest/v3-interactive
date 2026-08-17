@@ -1,5 +1,29 @@
 # Current Project Progress
 
+## Production Data + Media Lifecycle Pass â€” 2026-08-17
+
+**Status:** Completed
+
+### What changed
+
+- **Opening photo rule:** The opening image is now a bounded, separate 1:1 photo assembly rather than an absolute background behind text. It uses `object-cover`, attached corner markers, responsive 210â€“290px mobile / 320â€“340px tablet / 320â€“420px desktop sizing, and cannot overlap the opening copy or CTA.
+- **Response forwarding:** Intentional response events use a current-session anonymous UUID and one non-blocking browser request to `POST /api/response`. Recorded events are: affirmative relationship choice, every submitted Quiz Name/Favorite attempt (correct and incorrect), normal Date Choice selection, and either D3 virtual-date attempt. No keystrokes, No evasions, device data, location, IP address, or fingerprinting are collected.
+- **Disclosure and privacy:** The Question scene shows `btw, jawaban yang kamu kirim bakal aku lihat ya :)` before the first recordable response. The browser only calls the same-origin route; Telegram is never called from a client component.
+- **Telegram route:** `app/api/response/route.ts` manually limits body size, validates the UUID/event shape/known choice IDs/answer length, produces server-authoritative timestamps, and forwards a fixed-format plain-text message only when `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` are available. Missing configuration returns a controlled disabled result. `.env.example` documents both server-only variables; they must never use the `NEXT_PUBLIC_` prefix.
+- **Audio lifecycle:** `AudioPlayerProvider` registers one `pagehide` and one `visibilitychange` listener. Hidden or departing pages pause River Flow without automatic resume and stop/reset all active reusable SFX through the shared registry. Native pause events keep player status/equalizer correct while preserving music position for a later explicit Play.
+
+### Verification
+
+- Browser measurements at 360Ã—800, 390Ã—844, 430Ã—932, 768Ã—1024, and 1440Ã—900 found a square opening photo, `object-cover`, no copy collision, and no horizontal overflow. Measured post-rotation bounds were 268px, 291px, 300px, 331px, and 417px respectively.
+- Browser flow recorded only deliberate UI actions through the relationship/quiz/date paths. A normal date remained selected; D3 opened one configured modal and retained `aria-pressed="false"` underneath.
+- The unconfigured API route returned `{ "ok": true, "disabled": true }`; malformed requests return HTTP 400. No Telegram credentials are present in client source/static output; the client only references `/api/response`.
+- `npm run lint` and `npm run build` pass with 0 errors and 0 warnings.
+
+### Remaining open items
+
+- **P3 deployment configuration:** Set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in the hosting environment before expecting messages. Real Telegram delivery cannot be exercised without those credentials.
+- **P3 physical-device audio QA:** Confirm final relative loudness and browser-specific pagehide/visibility behavior on the recipient device. The implemented lifecycle uses native browser events and intentionally never resumes automatically.
+
 ## Production Interaction Fix â€” 2026-08-17
 
 **Status:** Completed

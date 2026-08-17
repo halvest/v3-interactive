@@ -10,6 +10,7 @@ import { useAudioPlayer } from "@/components/audio/AudioPlayerProvider";
 import { ANIMATION, gsap } from "@/lib/animations/gsap-setup";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import { useSoundEffect } from "@/lib/hooks/useSoundEffect";
+import { recordResponse } from "@/lib/responses/client";
 
 interface QuestionSceneProps {
   config: QuestionContent;
@@ -30,6 +31,7 @@ export function QuestionScene({ config, onYes }: QuestionSceneProps) {
   const escapeTweenRef = useRef<gsap.core.Tween | null>(null);
   const exitTweenRef = useRef<gsap.core.Tween | null>(null);
   const pointerWasConsumedRef = useRef(false);
+  const yesRecordedRef = useRef(false);
   const pendingEscapeRef = useRef<{ origin: EscapePosition; target: EscapePosition } | null>(null);
   const [escapeCount, setEscapeCount] = useState(0);
   const [hasEscaped, setHasEscaped] = useState(false);
@@ -152,6 +154,13 @@ export function QuestionScene({ config, onYes }: QuestionSceneProps) {
 
   const noLabel = escapeCount === 0 ? config.noLabel : config.noEscapeLabels[(escapeCount - 1) % config.noEscapeLabels.length];
   const handleYes = () => {
+    if (!yesRecordedRef.current) {
+      yesRecordedRef.current = true;
+      recordResponse({
+        type: "relationship_yes",
+        questionId: "relationship",
+      });
+    }
     if (isReducedMotion) { leaveQuestion(onYes); return; }
     setYesBurst(true);
   };
@@ -177,6 +186,7 @@ export function QuestionScene({ config, onYes }: QuestionSceneProps) {
           </div>
           {hasEscaped && <div ref={noBtnWrapperRef} className="absolute left-0 top-0 w-[calc((100%_-_0.75rem)_/_2)]" onPointerEnter={handlePointerEnter} onPointerDown={handlePointerDown}>{noButton}</div>}
         </div>
+        {config.responseDisclosure && <p className="mx-auto mt-1 max-w-[320px] text-center text-caption text-text-muted/80">{config.responseDisclosure}</p>}
       </div>
       {yesBurst && <LoveBurst count={8} onComplete={() => leaveQuestion(onYes)} />}
     </main>

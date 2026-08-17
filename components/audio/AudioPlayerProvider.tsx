@@ -2,6 +2,7 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { surpriseConfig } from "@/content/surprise";
+import { stopActiveSoundEffects } from "@/lib/audio/soundEffects";
 
 export type AudioStatus = "idle" | "loading" | "ready" | "playing" | "paused" | "error";
 
@@ -122,6 +123,23 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode })
 
   const pause = useCallback(() => {
     audioRef.current?.pause();
+  }, []);
+
+  useEffect(() => {
+    const pauseForPageLifecycle = () => {
+      audioRef.current?.pause();
+      stopActiveSoundEffects();
+    };
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") pauseForPageLifecycle();
+    };
+
+    window.addEventListener("pagehide", pauseForPageLifecycle);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      window.removeEventListener("pagehide", pauseForPageLifecycle);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
   const toggle = useCallback(() => {

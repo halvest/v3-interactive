@@ -25,6 +25,7 @@ export interface QuestionContent {
   yesLabel: string;
   noLabel: string;
   noEscapeLabels: string[];
+  responseDisclosure?: string;
 }
 
 export interface QuizContent {
@@ -195,7 +196,8 @@ export const surpriseConfig: SurpriseConfig = {
     text: "Maukah kamu jadi pacarku?",
     yesLabel: "Iya",
     noLabel: "Nggak",
-    noEscapeLabels: ["yakin?", "hehe", "hampir", "nggak bisa"]
+    noEscapeLabels: ["yakin?", "hehe", "hampir", "nggak bisa"],
+    responseDisclosure: "btw, jawaban yang kamu kirim bakal aku lihat ya :)"
   },
   quiz: {
     name: {

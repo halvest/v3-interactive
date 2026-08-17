@@ -6,7 +6,7 @@ import { useGSAP } from "@gsap/react";
 import { OpeningContent } from "@/content/surprise";
 import { Button } from "@/components/ui/Button";
 import { LoveBurst } from "@/components/ui/LoveBurst";
-import { PixelCursor, PixelHeartMedium, PixelHeartSmall, PixelSpark } from "@/components/ui/PixelAssets";
+import { PixelCorner, PixelCursor, PixelHeartMedium, PixelHeartSmall, PixelSpark } from "@/components/ui/PixelAssets";
 import { ANIMATION, gsap } from "@/lib/animations/gsap-setup";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 
@@ -82,17 +82,21 @@ export function OpeningScene({ config, onComplete }: OpeningSceneProps) {
   };
   const handleComplete = () => { setStartBurst(true); };
 
-  return <main ref={containerRef} className="fixed inset-0 z-50 flex h-[100dvh] w-full flex-col justify-center overflow-hidden bg-bg px-6 md:px-12 lg:px-24">
-    <div ref={photoRef} className="absolute right-[-10%] top-[10%] -z-10 aspect-[3/4] w-[60vw] rotate-[2deg] border border-sky/40 bg-sky-soft opacity-45 md:right-10 md:top-[15%] md:w-[400px]">
-      <Image src={config.previewImage} alt={config.previewImageAlt} fill className="object-cover" priority />
-    </div>
-    <div ref={textRef} className="relative z-10 mt-20 flex w-full max-w-2xl flex-col items-start text-left">
-      {config.systemLabel && <p className="pixel-label mb-5 text-plum">{config.systemLabel}</p>}
-      {config.eyebrow && <p className="text-body mb-4 text-text-muted md:mb-6">{config.eyebrow}</p>}
-      <h1 className="text-display mb-6 text-text-primary md:mb-8">{config.title}</h1>
-      {config.subtitle && <p className="text-body-lg mb-12 max-w-md text-text-muted">{config.subtitle}</p>}
-      <div className="mt-1 flex w-full justify-center self-center">
-        <Button onClick={handleComplete} className="inline-flex h-14 w-[180px] items-center justify-center gap-2.5 px-5 py-0 text-base leading-none md:w-[200px]"><PixelHeartSmall className="shrink-0 text-white" />{config.cta}</Button>
+  return <main ref={containerRef} className="fixed inset-0 z-50 flex h-[100dvh] w-full items-center justify-center overflow-hidden bg-bg px-6 py-10 md:px-12 lg:px-24">
+    <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center gap-8 md:flex-row md:justify-between md:gap-12">
+      <div ref={textRef} className="flex w-full max-w-2xl flex-col items-start text-left">
+        {config.systemLabel && <p className="pixel-label mb-5 text-plum">{config.systemLabel}</p>}
+        {config.eyebrow && <p className="text-body mb-4 text-text-muted md:mb-6">{config.eyebrow}</p>}
+        <h1 className="text-display mb-6 text-text-primary md:mb-8">{config.title}</h1>
+        {config.subtitle && <p className="text-body-lg mb-8 max-w-md text-text-muted md:mb-10">{config.subtitle}</p>}
+        <div className="mt-1 flex w-full justify-center self-center md:justify-start">
+          <Button onClick={handleComplete} className="inline-flex h-14 w-[180px] items-center justify-center gap-2.5 px-5 py-0 text-base leading-none md:w-[200px]"><PixelHeartSmall className="shrink-0 text-white" />{config.cta}</Button>
+        </div>
+      </div>
+      <div ref={photoRef} className="relative aspect-square w-[72vw] max-w-[290px] shrink-0 rotate-[2deg] border border-sky/40 bg-sky-soft shadow-paper md:w-[320px] md:max-w-[340px] lg:w-[clamp(320px,28vw,420px)] lg:max-w-[420px]">
+        <Image src={config.previewImage} alt={config.previewImageAlt} fill className="object-cover object-center" priority sizes="(max-width: 767px) 72vw, (max-width: 1023px) 320px, 420px" />
+        <PixelCorner className="pointer-events-none absolute left-3 top-3 h-6 w-6 text-love" />
+        <PixelCorner className="pointer-events-none absolute bottom-3 right-3 h-6 w-6 rotate-180 text-sky" />
       </div>
     </div>
     <div ref={deco1Ref} className="pointer-events-none absolute right-[26%] top-[25%] -z-10 text-sky"><PixelSpark className="h-10 w-10" /></div>

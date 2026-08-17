@@ -1,5 +1,25 @@
 # Independent Migration Audit
 
+## Production Data + Media Lifecycle Pass â€” 2026-08-17
+
+### Resolved / changed findings
+
+- **P2 opening-media composition â€” resolved.** `OpeningScene` now places its personalized image in an explicit square photo assembly after the text/content layer. The wrapper is responsive, has no text overlap, and owns its corner decoration; the image remains `object-cover` and is not a giant absolute background.
+- **P2 response handling and privacy â€” resolved.** The only client telemetry target is same-origin `/api/response`, fired asynchronously on deliberate actions only. Session grouping uses a random `crypto.randomUUID()` stored in `sessionStorage` for the current tab. Quiz inputs are never sent on change; only the submitted answer is forwarded. Question/answer copy supplied by the client is not trusted for Telegram formatting.
+- **P2 Telegram secret boundary â€” resolved.** The Route Handler is the sole Telegram caller and reads unprefixed `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` on the server. It limits body size, validates documented event types and known content IDs, rejects malformed input with 400, uses the server receipt time, and never returns Telegram details or credentials to the browser. Missing configuration yields a harmless disabled response.
+- **P2 media lifecycle â€” resolved.** One provider-owned page lifecycle effect pauses background music and stops active cat SFX on `pagehide` and document hidden. No listeners are installed per re-render, no extra RAF is introduced, the header receives the native paused event, and return visibility does not resume music.
+
+### QA evidence
+
+- Real browser inspection at 360Ã—800, 390Ã—844, 430Ã—932, 768Ã—1024, and 1440Ã—900 measured the opening assembly as square (268â€“417px bounds), with `object-cover`, no heading collision, and no horizontal document overflow.
+- Full-flow spot QA confirmed relationship/quiz progression and normal versus D3 date behavior. D3 showed the existing meme while remaining unselected; normal date choice remained selected. The disclosure is visible before affirmative Question submission.
+- With Telegram environment variables absent, `POST /api/response` returned HTTP 200 `{ "ok": true, "disabled": true }`; an unknown event produced HTTP 400. Source and client-static scans found no Telegram secret references outside the server route and no direct Telegram browser call.
+
+### Remaining open items
+
+- **P3 Telegram delivery QA:** Configure the two server-only environment variables in the eventual host and confirm messages arrive. No credentials were created, read, or exposed during this pass.
+- **P3 actual-device lifecycle QA:** Browser automation cannot audibly verify the SFX mix or reliably simulate every browser/pagehide implementation. The native listener paths are in code and must not auto-resume music.
+
 ## Production Interaction Fix â€” 2026-08-17
 
 ### Resolved / changed findings

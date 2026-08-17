@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { LoveBurst } from "@/components/ui/LoveBurst";
 import { PixelCursor, PixelHeartMedium, PixelSpark } from "@/components/ui/PixelAssets";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
+import { recordResponse } from "@/lib/responses/client";
 
 interface QuizNameSceneProps {
   config: QuizContent;
@@ -22,6 +23,7 @@ export function QuizNameScene({ config, onComplete }: QuizNameSceneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const successTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const feedbackTweenRef = useRef<gsap.core.Tween | null>(null);
+  const submitInFlightRef = useRef(false);
   const [answer, setAnswer] = useState("");
   const [feedback, setFeedback] = useState("");
   const [isLocked, setIsLocked] = useState(false);
@@ -71,9 +73,21 @@ export function QuizNameScene({ config, onComplete }: QuizNameSceneProps) {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (isLocked) return;
-    if (answer.trim().toLocaleLowerCase() === config.answer.trim().toLocaleLowerCase()) revealSuccess();
-    else showWrongFeedback();
+    if (isLocked || submitInFlightRef.current) return;
+    submitInFlightRef.current = true;
+    const correct = answer.trim().toLocaleLowerCase() === config.answer.trim().toLocaleLowerCase();
+    recordResponse({
+      type: "quiz_answer",
+      questionId: "quiz-name",
+      question: config.question,
+      answer,
+      correct,
+    });
+    if (correct) revealSuccess();
+    else {
+      showWrongFeedback();
+      window.setTimeout(() => { submitInFlightRef.current = false; }, 0);
+    }
   };
 
   return (

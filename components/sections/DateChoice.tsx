@@ -10,6 +10,7 @@ import { PixelHeartSmall } from "@/components/ui/PixelAssets";
 import { MemeOverlay } from "@/components/ui/MemeOverlay";
 import { useAudioPlayer } from "@/components/audio/AudioPlayerProvider";
 import { useSoundEffect } from "@/lib/hooks/useSoundEffect";
+import { recordResponse } from "@/lib/responses/client";
 
 interface DateChoiceProps {
   choices: DateChoiceType[];
@@ -51,11 +52,24 @@ export function DateChoice({ choices, content }: DateChoiceProps) {
       if (memeIsOpenRef.current) return;
       memeIsOpenRef.current = true;
       triggerRef.current = event.currentTarget;
+      recordResponse({
+        type: "meme_choice",
+        questionId: choice.id,
+        question: content.heading,
+        answer: option,
+      });
       setMemeInteraction(choice.specialInteraction);
       playMemeSound();
       return;
     }
 
+    if (selections[choice.id] === option) return;
+    recordResponse({
+      type: "date_choice",
+      questionId: choice.id,
+      question: content.heading,
+      answer: option,
+    });
     setSelections((previous) => ({ ...previous, [choice.id]: option }));
   };
 

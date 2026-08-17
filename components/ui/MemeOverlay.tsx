@@ -101,6 +101,7 @@ export function MemeOverlay({ interaction, onDismissStart, onClose }: MemeOverla
           width={320}
           height={240}
           unoptimized
+          loading="eager"
           className="mx-auto aspect-[4/3] w-full max-w-[280px] object-contain sm:max-w-[320px]"
         />
         <p id="meme-overlay-message" ref={messageRef} className="mt-5 text-center font-serif text-[clamp(1.7rem,7vw,2.35rem)] leading-[0.95] text-text-primary [text-wrap:balance]">
