@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-canvas: #FFF6E9;
+  --color-ink: #1E1E24;
+  --color-love: #F06F68;
+  --color-love-deep: #D94D55;
+  --color-sky: #72A9E8;
+  --color-sage: #7FA47A;
+  --color-lavender: #9C82D4;
+  --color-gold: #E6B84C;
+  --color-plum: #45364F;
+  --color-bg: #FFF6E9;
+  --color-bg-deep: #F7EBDD;
+  --color-surface: #FFFDF8;
+  --color-surface-warm: #F3E4CF;
+  --color-text-primary: #1E1E24;
+  --color-text-muted: #6D6965;
+  --color-text-faint: #9C968F;
+  --color-accent: #F06F68;
+  --color-accent-hover: #D94D55;
+  --color-sky-soft: #E4F0FF;
+  --color-sage-light: #E5F0DE;
+  --color-lavender-soft: #EEE6FA;
+  --color-mustard: #E6B84C;
+  --color-mustard-soft: #FBF0CF;
+  --color-coral-soft: #FBE3DC;
+  --color-border-subtle: rgba(32,33,36,0.08);
+  --color-border-strong: rgba(32,33,36,0.16);
+
+  /* Fonts */
+  --font-geist: var(--font-geist-sans), sans-serif;
+  --font-serif: var(--font-instrument-serif), serif;
+  --font-caveat: var(--font-caveat), cursive;
+
+  /* Shadows */
+  --shadow-paper: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+  --shadow-polaroid: 0 4px 16px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-elevated: 0 8px 30px rgba(0,0,0,0.08);
+  --shadow-paper-lg: 0 12px 40px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+  --shadow-floating: 0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+
+  /* Animations */
+  --animate-eq-1: eq 1.2s ease-in-out infinite alternate;
+  --animate-eq-2: eq 1s ease-in-out infinite alternate-reverse;
+  --animate-eq-3: eq 0.8s ease-in-out infinite alternate;
+
+}
+
+/*
+  Semantic spacing values intentionally live outside Tailwind's --spacing-* theme
+  namespace. In Tailwind v4 that namespace also drives utilities such as max-w-md
+  and max-w-2xl, so redefining it collapses container widths.
+*/
+:root {
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-section-mobile: 80px;
+  --space-section-desktop: 120px;
+  --space-scene: 100dvh;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text-primary);
+    font-family: var(--font-geist);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-image: repeating-linear-gradient(0deg, transparent 0 3px, color-mix(in srgb, var(--color-plum) 5%, transparent) 3px 4px);
+  }
+
+  :where(button, a, [role="button"]):focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+  }
+}
+
+@keyframes eq {
+  0% { transform: scaleY(0.3); }
+  100% { transform: scaleY(1); }
+}
+
+@layer components {
+  /* Typography Scale */
+  .text-display {
+    @apply font-serif text-[40px] leading-[1.08] md:text-[64px] tracking-tight font-normal;
+  }
+  .text-heading-1 {
+    @apply font-serif text-[28px] leading-[1.15] md:text-[40px] font-normal;
+  }
+  .text-heading-2 {
+    @apply font-geist text-[20px] leading-[1.3] md:text-[24px] font-medium;
+  }
+  .text-body-lg {
+    @apply font-geist text-[18px] leading-[1.6] md:text-[20px] font-normal;
+  }
+  .text-body {
+    @apply font-geist text-[16px] leading-[1.6] md:text-[16px] font-normal;
+  }
+  .text-caption {
+    @apply font-geist text-[14px] leading-[1.5] md:text-[14px] font-normal tracking-wide;
+  }
+  .text-annotation {
+    @apply font-caveat text-[16px] leading-[1.4] md:text-[20px] font-normal tracking-wide;
+  }
+  .pixel-label {
+    @apply inline-flex items-center gap-2 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-text-muted;
+  }
+  .pixel-label::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    background: currentColor;
+    box-shadow: 3px 3px 0 color-mix(in srgb, currentColor 55%, transparent);
+  }
+  .pixel-button {
+    clip-path: polygon(0 4px, 4px 4px, 4px 0, calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px));
+    box-shadow: 3px 3px 0 color-mix(in srgb, var(--color-plum) 75%, transparent);
+  }
+}
+
+/* Reduced Motion Foundation */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-delay: -1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    background-attachment: initial !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }
+}
