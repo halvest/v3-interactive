@@ -181,7 +181,7 @@ export const surpriseConfig: SurpriseConfig = {
     title: "aku bikin sesuatu.",
     subtitle: "cuma sebentar kok.",
     cta: "START →",
-    previewImage: "/images/05.webp",
+    previewImage: "/images/lovecat.gif",
     previewImageAlt: "A placeholder for the opening memory"
   },
   envelope: {
